@@ -31,7 +31,7 @@ class AppThread(Thread):
     
 
     def pushData(self, data):
-        socketio.emit('newnumber', data, namespace='/test')
+        socketio.emit('telemetry', data, namespace='/test')
 
     def run(self):
-    	socketio.run(self.app, host='0.0.0.0')
+    	socketio.run(app, host='0.0.0.0')

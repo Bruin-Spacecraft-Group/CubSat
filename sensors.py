@@ -15,14 +15,15 @@ class Sensors(Thread, parent):
 		self.imu = adafruit_lsm9ds1.LSM9DS1_I2C(i2c)
 
 		self.data = {
-			accel: (0,0,0),
-			gyro: (0,0,0),
-			mag: (0,0,0),
-			temp: 0,
-			pressure: 0,
-			alt: 0,
-			voltage: 0,
-			current: 0
+			'accel': [0,0,0],
+			'gyro': [0,0,0],
+			'mag': [0,0,0],
+			'imu_temp': 0,
+			'temp': 0,
+			'pressure': 0,
+			'alt': 0,
+			'voltage': 0,
+			'current': 0
 		}
 
 		super(Sensors, self).__init__()
