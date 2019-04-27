@@ -7,8 +7,10 @@ import time
 import board
 import busio
 import adafruit_lsm9ds1
+import adafruit_mpl3115a2
+import adafruit_ina219
 
-class Sensors(Thread, parent):
+class Sensors(Thread):
 	def __init__(self):
 		self.imu = False
 		self.baro = False
@@ -28,6 +30,8 @@ class Sensors(Thread, parent):
 		
 		try:
 			self.baro = adafruit_mpl3115a2.MPL3115A2(self.i2c)
+			# Calibrate altimeter
+			self.baro.sealevel_pressure = 102250
 		except:
 			print("could not connect to MPL3115A2")
 
@@ -43,9 +47,6 @@ class Sensors(Thread, parent):
 			'shunt_voltage': 0,
 			'current': 0
 		}
-
-		# Calibrate altimeter
-		self.baro.sealevel_pressure = 102250
 
 		super(Sensors, self).__init__()
 	

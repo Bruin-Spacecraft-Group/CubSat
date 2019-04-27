@@ -37,8 +37,8 @@ class Main(Thread):
 			#exit()
 
 		## initialize sensors
-		self.sensorThread = Sensors(self)
-		self.sensorThread.run()
+		self.sensorThread = Sensors()
+		self.sensorThread.start()
 		#self.numberGen = RandomThread()
 		super(Main, self).__init__()
 		self.daemon = True
