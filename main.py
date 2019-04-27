@@ -5,7 +5,7 @@ from threading import Thread, Event
 from gpiozero import LED
 from appThread import AppThread
 from random import random
-#from sensors import Sensors
+from sensors import Sensors
 
 from numberGen import RandomThread
 from flask_socketio import SocketIO, emit
@@ -37,8 +37,9 @@ class Main(Thread):
 			#exit()
 
 		## initialize sensors
-		#self.sensorThread = Sensors(self)
-		self.numberGen = RandomThread()
+		self.sensorThread = Sensors(self)
+		self.sensorThread.run()
+		#self.numberGen = RandomThread()
 		super(Main, self).__init__()
 		self.daemon = True
 		print("initialized")
@@ -47,8 +48,8 @@ class Main(Thread):
 		while True:
 			print("loop")
 			## poll sensors
-			#data = self.sensorThread.data
-			data = self.numberGen.generateData()
+			data = self.sensorThread.data
+			#data = self.numberGen.generateData()
 			# data = {
 			# 	'accel': [0,0,0],
 			# 	'gyro': [0,0,0],
