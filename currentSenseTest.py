@@ -13,7 +13,7 @@ print("ina219 test")
  
 while True:
     print("Bus Voltage:   {} V".format(ina219.bus_voltage))
-    print("Shunt Voltage: {} mV".format(ina219.shunt_voltage / 1000))
+    print("Shunt Voltage: {} V".format(ina219.shunt_voltage / 1000))
     print("Load Voltage:  {} V".format(ina219.bus_voltage + ina219.shunt_voltage))
     print("Current:       {} mA".format(ina219.current))
     print("")

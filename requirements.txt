@@ -4,3 +4,5 @@ flask-socketio
 gpiozero
 Adafruit_Blinka
 adafruit-circuitpython-lsm9ds1
+adafruit-circuitpython-ina219
+adafruit-circuitpython-mpl3115a2
