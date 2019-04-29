@@ -81,6 +81,7 @@ class Sensors(Thread):
 			'temp': 0,
 			'pressure': 0,
 			'alt': 0,
+			'gps': 'no_fix',
 			'bus_voltage': 0,
 			'shunt_voltage': 0,
 			'current': 0

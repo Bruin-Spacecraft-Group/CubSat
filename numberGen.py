@@ -1,6 +1,8 @@
 #Random Number Generator Thread
 from threading import Thread, Event
 from random import random
+from datetime import datetime
+
 thread = Thread()
 thread_stop_event = Event()
 class RandomThread(Thread):
@@ -16,9 +18,10 @@ class RandomThread(Thread):
           'temp': 0,
           'pressure': 0,
           'alt': 0,
-          'voltage': 0,
-          'current': 0,
-          'dt': 0
+          'gps': 'no_fix',
+          'bus_voltage': 0,
+          'shunt_voltage': 0,
+          'current': 0
         }
         for key in data:
             try:
@@ -31,6 +34,17 @@ class RandomThread(Thread):
                 data['accel'][i] = -1*data['accel'][i]
             if random() > 0.5:
                 data['gyro'][i] = -1*data['gyro'][i]
+        data['gps'] = {
+          'time': datetime.utcnow().isoformat(),
+          'coords': [34.06 + random()/1000, -118.44 + random()/1000],
+          'quality': random(),
+          'satellites': round(random()*12),
+          'altitude': random()*100,
+          'speed': random()*10,
+          'track_angle': random()*90,
+          'dilation': random(),
+          'height_geoid': random()*100
+        }
         data['dt'] = random()*1.5
         return data
 

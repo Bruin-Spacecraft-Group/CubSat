@@ -1,11 +1,9 @@
-import serial
-import serial.tools.list_ports
 from time import sleep
 from threading import Thread, Event
 from gpiozero import LED
 from appThread import AppThread
 from random import random
-from sensors import Sensors
+#from sensors import Sensors
 
 from numberGen import RandomThread
 from flask_socketio import SocketIO, emit
@@ -15,41 +13,19 @@ from threading import Thread
 
 class Main(Thread):
 	def __init__(self):
-
-		## Try to open serial port
-		comlist = serial.tools.list_ports.comports()
-		for x in comlist:
-			try:
-				print("Opening Serial Port {}".format(x))
-				#initiate serial port to read data from
-				ser = serial.Serial(
-				    port=x,
-				    baudrate=115200,
-				    timeout=3, #give up reading after 3 seconds
-				    parity=serial.PARITY_ODD,
-				    stopbits=serial.STOPBITS_TWO,
-				    bytesize=serial.SEVENBITS
-				)
-				print("connected to port {}".format(x))
-				break
-			except:
-				print("Error connecting to {}".format(x))
-			#exit()
-
 		## initialize sensors
-		self.sensorThread = Sensors()
-		self.sensorThread.start()
-		#self.numberGen = RandomThread()
+		# self.sensorThread = Sensors()
+		# self.sensorThread.start()
+		self.numberGen = RandomThread()
 		super(Main, self).__init__()
 		self.daemon = True
 		print("initialized")
 
 	def run(self):
 		while True:
-			print("loop")
 			## poll sensors
-			data = self.sensorThread.data
-			#data = self.numberGen.generateData()
+			#data = self.sensorThread.data
+			data = self.numberGen.generateData()
 			# data = {
 			# 	'accel': [0,0,0],
 			# 	'gyro': [0,0,0],
@@ -65,7 +41,8 @@ class Main(Thread):
 
 			## send to radio
 			if flask:
-				print("sending")
+				print('sending')
+				#print("sending {}".format(data))
 				pushData(data)
 
 			sleep(1)

@@ -1,5 +1,6 @@
-console.log("Dummy")
 var gauges = [];
+var map;
+var flightPlanCoordinates = [];
 var state = {
     'accel': [0,0,0],
     'velocity': [0,0,0],
@@ -9,6 +10,7 @@ var state = {
     'temp': 0,
     'pressure': 0,
     'alt': 0,
+    'gps': 'no_fix',
     'voltage': 0,
     'current': 0,
     'dt': 0
@@ -54,9 +56,37 @@ function updateGauges()
     gauges['angular_z'].redraw(Math.abs(state['gyro'][2]));
 }
 
+function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 16,
+      center: {lat: 0, lng: -180},
+      mapTypeId: 'terrain'
+    });
+    console.log('map inited')
+}
+
+function updateMap() {
+    if (state['gps'] == 'no_fix') {
+        return
+    }
+
+    flightPlanCoordinates.push({lat: state['gps']['coords'][0], lng: state['gps']['coords'][1]})
+
+    var flightPath = new google.maps.Polyline({
+      path: flightPlanCoordinates,
+      geodesic: true,
+      strokeColor: '#FF0000',
+      strokeOpacity: 1.0,
+      strokeWeight: 2
+    });
+
+    flightPath.setMap(map);
+    map.setCenter({lat: state['gps']['coords'][0], lng: state['gps']['coords'][1]})
+}
 function initialize()
 {
     createGauges();
+    initMap()
     console.log("initialized")
 }
 
@@ -73,6 +103,7 @@ function processTelemetry(data)
     for(i in state['gyro']){
         state['angle'][i] = state['angle'][i] + state['gyro'][i]*state['dt']
     }
+    console.log(state['gps'])
 }
 
 $(document).ready(function(){
@@ -82,10 +113,11 @@ $(document).ready(function(){
     initialize()
     //receive details from server
     socket.on('telemetry', function(msg) {
-        console.log("Received message " + msg);
+        //console.log("Received message " + msg);
         processTelemetry(msg)
         updateGauges()
-        console.log(JSON.stringify(state))
+        updateMap()
+        //console.log(JSON.stringify(state))
     });
 
 });
