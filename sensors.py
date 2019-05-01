@@ -38,15 +38,15 @@ class Sensors(Thread):
 		except:
 			print("could not connect to MPL3115A2")
 
-		self.RX = board.D15 #RX
-		self.TX = board.D14 #TX
+		#self.RX = board.D15 #RX
+		#self.TX = board.D14 #TX
 
 		# Create a serial connection for the GPS connection using default speed and
 		# a slightly higher timeout (GPS modules typically update once a second).
 		try:
 			#self.uart = busio.UART(self.TX, self.RX, baudrate=9600, timeout=3000)
-			self.uart = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=3000)
-			self.gps = adafruit_gps.GPS(uart, debug=False)
+			self.uart = serial.Serial("/dev/ttyS0", baudrate=9600, timeout=3000)
+			self.gps = adafruit_gps.GPS(self.uart, debug=False)
 			# Initialize the GPS module by changing what data it sends and at what rate.
 			# These are NMEA extensions for PMTK_314_SET_NMEA_OUTPUT and
 			# PMTK_220_SET_NMEA_UPDATERATE but you can send anything from here to adjust
@@ -124,6 +124,7 @@ class Sensors(Thread):
 					# Try again if we don't have a fix yet.
 					self.data['gps'] = "no_fix"
 				else:
+					self.data['gps'] = dict()
 					# We have a fix! (gps.has_fix is true)
 					# Print out details about the fix like location, date, etc.
 					self.data['gps']['time'] = [
