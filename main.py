@@ -15,16 +15,26 @@ from threading import Thread
 class Main(Thread):
 	def __init__(self):
 		## initialize sensors
-		self.sensorThread = Sensors()
-		self.radioThread = Radio()
+		self.sensorThread = False
+		self.radioThread = False
+		try:
+			self.sensorThread = Sensors()
+		except:
+			print("error initing sensor thread")
+		try:
+			self.radioThread = Radio()
+		except:
+			print("error initing radio thread")
 		#self.numberGen = RandomThread()
 		super(Main, self).__init__()
 		self.daemon = True
 		print("initialized")
 
 	def run(self):
-		self.sensorThread.start()
-		self.radioThread.start()
+		if self.sensorThread:
+			self.sensorThread.start()
+		if self.radioThread:
+			self.radioThread.start()
 		while True:
 			## poll sensors
 			data = self.sensorThread.data
@@ -47,7 +57,8 @@ class Main(Thread):
 				print('sending')
 				#print("sending {}".format(data))
 				pushData(data)
-				self.radioThread.sendData(data)
+				if self.radioThread:
+					self.radioThread.sendData(data)
 
 			sleep(1)
     
