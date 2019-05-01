@@ -6,6 +6,7 @@ from threading import Thread
 import time
 import board
 import busio
+import serial
 import adafruit_lsm9ds1
 import adafruit_mpl3115a2
 import adafruit_ina219
@@ -16,6 +17,7 @@ class Sensors(Thread):
 		self.imu = False
 		self.baro = False
 		self.currentSense = False
+		self.gps = False
 
 		# I2C connection:
 		self.i2c = busio.I2C(board.SCL, board.SDA)
@@ -36,14 +38,14 @@ class Sensors(Thread):
 		except:
 			print("could not connect to MPL3115A2")
 
-		self.RX = board.RX
-		self.TX = board.TX
+		self.RX = board.D15 #RX
+		self.TX = board.D14 #TX
 
 		# Create a serial connection for the GPS connection using default speed and
 		# a slightly higher timeout (GPS modules typically update once a second).
-		self.uart = busio.UART(self.TX, self.RX, baudrate=9600, timeout=3000)
-
 		try:
+			#self.uart = busio.UART(self.TX, self.RX, baudrate=9600, timeout=3000)
+			self.uart = serial.Serial("/dev/ttyUSB0", baudrate=9600, timeout=3000)
 			self.gps = adafruit_gps.GPS(uart, debug=False)
 			# Initialize the GPS module by changing what data it sends and at what rate.
 			# These are NMEA extensions for PMTK_314_SET_NMEA_OUTPUT and

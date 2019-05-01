@@ -3,7 +3,7 @@ from threading import Thread, Event
 from gpiozero import LED
 from appThread import AppThread
 from random import random
-#from sensors import Sensors
+from sensors import Sensors
 from radio import Radio
 
 from numberGen import RandomThread
@@ -15,8 +15,8 @@ from threading import Thread
 class Main(Thread):
 	def __init__(self):
 		## initialize sensors
-		# self.sensorThread = Sensors()
-		# self.sensorThread.start()
+		self.sensorThread = Sensors()
+		self.sensorThread.start()
 		self.radioThread = Radio()
 		self.radioThread.start()
 		self.numberGen = RandomThread()
