@@ -97,10 +97,14 @@ class Sensors(Thread):
 		while True:
 			# Read acceleration, magnetometer, gyroscope, temperature.
 			if self.imu:
-			    self.data['accel'] = self.imu.acceleration
-			    self.data['mag'] = self.imu.magnetic
-			    self.data['gyro'] = self.imu.gyro
-			    self.data['imu_temp'] = self.imu.temperature
+				accel_x, accel_y, accel_z = self.imu.acceleration
+				mag_x, mag_y, mag_z = self.imu.magnetic
+				gyro_x, gyro_y, gyro_z = self.imu.gyro
+				temp = self.imu.temperature
+				self.data['accel'] = [accel_x, accel_y, accel_z]
+				self.data['mag'] = [mag_x, mag_y, mag_z]
+				self.data['gyro'] = [gyro_x, gyro_y, gyro_z]
+				self.data['imu_temp'] = [temp]
 		    
 			if self.baro:
 			    # Read barometer data
