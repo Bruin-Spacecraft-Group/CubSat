@@ -16,19 +16,19 @@ class Main(Thread):
 	def __init__(self):
 		## initialize sensors
 		self.sensorThread = Sensors()
-		self.sensorThread.start()
 		self.radioThread = Radio()
-		self.radioThread.start()
-		self.numberGen = RandomThread()
+		#self.numberGen = RandomThread()
 		super(Main, self).__init__()
 		self.daemon = True
 		print("initialized")
 
 	def run(self):
+		self.sensorThread.start()
+		self.radioThread.start()
 		while True:
 			## poll sensors
-			#data = self.sensorThread.data
-			data = self.numberGen.generateData()
+			data = self.sensorThread.data
+			# data = self.numberGen.generateData()
 			# data = {
 			# 	'accel': [0,0,0],
 			# 	'gyro': [0,0,0],
