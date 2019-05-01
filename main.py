@@ -4,6 +4,7 @@ from gpiozero import LED
 from appThread import AppThread
 from random import random
 #from sensors import Sensors
+from radio import Radio
 
 from numberGen import RandomThread
 from flask_socketio import SocketIO, emit
@@ -16,6 +17,8 @@ class Main(Thread):
 		## initialize sensors
 		# self.sensorThread = Sensors()
 		# self.sensorThread.start()
+		self.radioThread = Radio()
+		self.radioThread.start()
 		self.numberGen = RandomThread()
 		super(Main, self).__init__()
 		self.daemon = True
@@ -44,6 +47,7 @@ class Main(Thread):
 				print('sending')
 				#print("sending {}".format(data))
 				pushData(data)
+				self.radioThread.sendData(data)
 
 			sleep(1)
     
