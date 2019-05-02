@@ -31,6 +31,7 @@ class Main(Thread):
 		print("initialized")
 
 	def run(self):
+		print("main loop running")
 		if self.sensorThread:
 			self.sensorThread.start()
 		if self.radioThread:
@@ -54,14 +55,14 @@ class Main(Thread):
 
 			## send to radio
 			if flask:
-				print('sending')
+				#print('sending')
 				#print("sending {}".format(data))
 				pushData(data)
 				if self.radioThread:
+					#print("sending over radio")
 					self.radioThread.sendData(data)
-
 			sleep(1)
-    
+
 flask = True
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'

@@ -152,6 +152,6 @@ class Sensors(Thread):
 					    self.data['gps']['height_geoid'] = self.gps.height_geoid
 
 			# Print values.
-			print(self.data)
+			# print(self.data)
 			# Delay for a second.
 			time.sleep(1.0)

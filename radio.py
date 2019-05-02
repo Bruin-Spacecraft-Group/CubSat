@@ -12,29 +12,34 @@ class Radio(Thread):
 		cs = digitalio.DigitalInOut(board.D16) #can be any GPIO
 		reset = digitalio.DigitalInOut(board.D26) #can be any GPIO
 		self.rfm9x = adafruit_rfm9x.RFM9x(spi, cs, reset, 433.0)
-		self.dataSize = 252 - 2 #number of bytes we can send in packet, minus check bytes
+		self.dataSize = 252 - 2 - 12 #number of bytes we can send in packet, minus check bytes
 		super(Radio, self).__init__()
 		
 	def sendData(self, data):
 		# max packet size is 252 bytes, if I want to send more than that, must be broken up
 		# TODO not sure if the 252 includes the preamble and header or not!
 		# need a way to mark packets -- numerator and denominator, 1 byte for each
-		
-		print(data)
+		print("sending over radio")
+		#print(data)
 		stringifiedData = json.dumps(data) 
 		
 		numPackets = math.ceil(len(stringifiedData) / (self.dataSize))
-		print(numPackets)
+		#print(numPackets)
 		for i in range(numPackets):
 			packet = stringifiedData[i*self.dataSize : (i+1)*self.dataSize]
 			packet = packet + str(i+1) + str(numPackets)
-			print(packet)
-			self.rfm9x.send(bytes(packet))
+			#print("packet {}/{}: {}".format(i+1, numPackets, packet))
+			print("packet {}/{}".format(i+1, numPackets))
+			try:
+				self.rfm9x.send(bytes(packet, 'utf-8'))
+			except:
+				"error sending packet"
 
 	def run(self):
-		while True:
+		print("radioThread running")
+		while False:
 			try:
-				packet = self.rfm9x.receive()  # Wait for a packet to be received (up to 0.5 seconds)
+				packet = self.rfm9x.receive(timeout=0.1)  # Wait for a packet to be received (up to 0.5 seconds)
 				if packet is not None:
 					packet_text = str(packet, 'ascii')
 					rssi = self.rfm9x.rssi
