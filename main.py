@@ -5,6 +5,7 @@ from appThread import AppThread
 from random import random
 from sensors import Sensors
 from radio import Radio
+from camera import Camera
 
 from numberGen import RandomThread
 from flask_socketio import SocketIO, emit
@@ -17,10 +18,15 @@ class Main(Thread):
 		## initialize sensors
 		self.sensorThread = False
 		self.radioThread = False
+		self.cameraThread = False
 		try:
 			self.sensorThread = Sensors()
 		except:
 			print("error initing sensor thread")
+		try:
+			self.cameraThread = Camera()
+		except:
+			print("error initializing camera thread")
 		try:
 			self.radioThread = Radio()
 		except:
@@ -36,23 +42,27 @@ class Main(Thread):
 			self.sensorThread.start()
 		if self.radioThread:
 			self.radioThread.start()
+		if self.cameraThread:
+			self.cameraThread.start()
 		while True:
 			## poll sensors
-			data = self.sensorThread.data
+			if self.sensorThread:
+				data = self.sensorThread.data
 			# data = self.numberGen.generateData()
-			# data = {
-			# 	'accel': [0,0,0],
-			# 	'gyro': [0,0,0],
-			# 	'mag': [0,0,0],
-			# 	'imu_temp': 0,
-			# 	'temp': 0,
-			# 	'pressure': 0,
-			# 	'alt': 0,
-			# 	'voltage': 0,
-			# 	'current': 0,
-			# 	'dt': 0
-			# }
-
+			data = {
+				'accel': [0,0,0],
+				'gyro': [0,0,0],
+				'mag': [0,0,0],
+				'imu_temp': 0,
+				'temp': 0,
+				'pressure': 0,
+				'alt': 0,
+				'voltage': 0,
+				'current': 0,
+				'dt': 0
+			}
+			if self.cameraThread:
+				self.cameraThread.image()
 			## send to radio
 			if flask:
 				#print('sending')
