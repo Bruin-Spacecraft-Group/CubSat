@@ -1,4 +1,6 @@
+var activePage = "Main"
 var gauges = [];
+var lines = [];
 var map;
 var flightPlanCoordinates = [];
 var state = {
@@ -13,7 +15,8 @@ var state = {
     'gps': 'no_fix',
     'voltage': 0,
     'current': 0,
-    'dt': 0
+    'dt': 0,
+    'runtime': 0
 }  
 
 function createGauge(name, label, min, max)
@@ -25,7 +28,10 @@ function createGauge(name, label, min, max)
         label: label,
         min: undefined != min ? min : 0,
         max: undefined != max ? max : 100,
-        minorTicks: 5
+        minorTicks: 5,
+        greenColor: "#109618",
+        yellowColor: "#ffff74",
+        redColor: "#ff1744",
     }
     
     var range = config.max - config.min;
@@ -56,6 +62,20 @@ function updateGauges()
     gauges['angular_z'].redraw(Math.abs(state['gyro'][2]));
 }
 
+function createLineGraph(name)
+{
+    lines[name] = new LineGraph(name + "LineGraphContainer");
+    lines[name].makeLine();
+}
+function createLineGraphs()
+{
+    createLineGraph('accel_x')
+}
+function updateLineGraphs()
+{
+    lines['accel_x'].addPoint(state['accel'][0],state['runtime']);
+}
+
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
       zoom: 16,
@@ -83,9 +103,19 @@ function updateMap() {
     flightPath.setMap(map);
     map.setCenter({lat: state['gps']['coords'][0], lng: state['gps']['coords'][1]})
 }
+
+function updateConsole() {
+
+}
+
+function updateVideo() {
+
+}
+
 function initialize()
 {
     createGauges();
+    createLineGraphs();
     initMap()
     console.log("initialized")
 }
@@ -103,6 +133,7 @@ function processTelemetry(data)
     for(i in state['gyro']){
         state['angle'][i] = state['angle'][i] + state['gyro'][i]*state['dt']
     }
+    state['runtime'] += state['dt']
     console.log(state['gps'])
 }
 
@@ -115,9 +146,30 @@ $(document).ready(function(){
     socket.on('telemetry', function(msg) {
         //console.log("Received message " + msg);
         processTelemetry(msg)
-        updateGauges()
-        updateMap()
+        switch(activePage){
+            case "Main":
+                updateGauges()
+                updateLineGraphs()
+                updateMap()
+                break;
+            case "Data":
+                updateConsole()
+                break;
+            case "Video":
+                updateVideo()
+                break;
+        }
+
         //console.log(JSON.stringify(state))
     });
 
 });
+
+function switchPage(object) {
+    $(".vizPage").each(function(){
+        $(this).hide()
+    })
+    activePage = object.id.slice(6,object.id.length)
+    $("#"+activePage).show()
+
+}

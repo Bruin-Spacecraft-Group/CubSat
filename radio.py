@@ -21,12 +21,35 @@ class Radio(Thread):
 		# need a way to mark packets -- numerator and denominator, 1 byte for each
 		print("sending over radio")
 		#print(data)
-		stringifiedData = json.dumps(data) 
+		#stringifiedData = json.dumps(data) 
+
+		dataString = str(round(data['accel'][0],3)) + ',' + str(round(data['accel'][1], 3)) + ',' + str(round(data['accel'][2], 3))
+		dataString += ',' + str(round(data['gyro'][0],3)) + ',' + str(round(data['gyro'][1],3)) + ',' + str(round(data['gyro'][2],3))
+		dataString += ',' + str(round(data['mag'][0],2)) + ',' + str(round(data['mag'][1],2)) + ',' + str(round(data['mag'][2],2))
+		dataString += ',' + str(round(data['imu_temp'], 2)) 
+		dataString += ',' + str(round(data['temp'],3)) 
+		dataString += ',' + str(round(data['pressure'],3))
+		dataString += ',' + str(round(data['alt'],3)) 
+		dataString += ',' + str(round(data['alt'],3)) 
+		dataString += ',' + str(round(data['bus_voltage'],3)) 
+		dataString += ',' + str(round(data['shunt_voltage'],3)) 
+		dataString += ',' + str(round(data['current'],3)) 
+		dataString += ',' + str(round(data['dt'],3))
+		dataString += ',' + str(data['gps']['time']) + ',' + str(data['gps']['coords'][0]) + ',' + str(data['gps']['coords'][1]) + ',' + str(data['gps']['quality'])
+		try:
+			dataString += ',' + str(round(data['gps']['satellites'],3))
+			dataString += ',' + str(round(data['gps']['altitude'],3))
+			dataString += ',' + str(round(data['gps']['speed'],3))
+			dataString += ',' + str(round(data['gps']['track_angle'],3))
+			dataString += ',' + str(round(data['gps']['dilation'],3))
+			dataString += ',' + str(round(data['gps']['height_geoid'],3))
+		except:
+			pass
 		
-		numPackets = math.ceil(len(stringifiedData) / (self.dataSize))
+		numPackets = math.ceil(len(dataString) / (self.dataSize))
 		#print(numPackets)
 		for i in range(numPackets):
-			packet = stringifiedData[i*self.dataSize : (i+1)*self.dataSize]
+			packet = dataString[i*self.dataSize : (i+1)*self.dataSize]
 			packet = packet + str(i+1) + str(numPackets)
 			#print("packet {}/{}: {}".format(i+1, numPackets, packet))
 			print("packet {}/{}".format(i+1, numPackets))

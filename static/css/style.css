@@ -5,35 +5,112 @@ html, body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
+	overflow-x: hidden;
+	overflow-y: hidden;
 }
 body {
 	background-color: #000000;
 	color: #FFFFFF;
+	font-family: 'Courier New'
+}
+
+nav {
+    background-color: black;
+    height: 6vh;
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 0.75vh 2.5vw;
+    z-index: 350;
+    border-bottom: 2px solid #009FFD;
+    display: inline-flex;
+    align-items: center;
+}
+nav > h1 {
+	width: 15vw;
+	font-size: 36px;
+}
+nav > .links {
+	width: 72.5vw;
+	padding-right: 7.5vw;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: flex;
+    -webkit-align-items: center;
+    -moz-box-align: center;
+    align-items: center;
+    -webkit-justify-content: space-between;
+    -moz-box-pack: justify;
+    justify-content: space-between;
+}
+.button {
+	width: 20vw;
+	text-align: center;;
+	font-size: 32px;
+	border-bottom: black solid 1px;
+	transition: 0.6s; 
+}
+.button:hover {
+	border-bottom: #009FFD solid 1px;
+	transition: 0.6s; 
+}
+.button:active {
+	color: #009FFD;
 }
 .title {
-	padding: 8vw;
+	display: flex;
+	justify-content: left;
+	flex-direction: column;
+	padding-left: 8vw;
+	padding-right: 8vw;
+	height: 15vh;
 }
-.graphContainer {
+.title > h1 {
+	border-bottom: #009FFD solid 2px;
+}
+.vizWrapper {
 	display: flex;
 	justify-content: center;
 	flex-direction: row;
 	flex-wrap: wrap;
 	margin: auto;
-	height: 66vh;
+	padding: 5vh;
+	height: 85vh;
+	overflow-x: hidden;
+	overflow-y: hidden;
+}
+.vizPage {
+	margin: 0;
+	padding: 0;
+	min-width: 100%;
+	min-height: 100%;
+	display: flex;
+	justify-content: center;
+	flex-direction: row;
+	flex-wrap: wrap;
+	margin: auto;
 }
 #gauges {
 	width: 50%;
+	height: 50%;
+	margin: 0;
+	padding: 0;
 	display: flex;
 	justify-content: center;
 	flex-direction: row;
 	flex-wrap: wrap;
 }
-#lineGraphs {
-	width: 50%;
+.gaugesSubContainer {
+	width: 100%;
 	display: flex;
-	flex-direction: column;
+	justify-content: space-around;
+
 }
+
 #map {
+	margin: 0;
+	padding: 0;
 	height: 60vh;
 	width: 40vw;
 	background-color: white;
@@ -43,4 +120,62 @@ body {
 	display: flex;
 	justify-content: center;
 	margin-bottom: 5vh;
+}
+
+
+
+#lineGraphs {
+	width: 50%;
+	height: 50%;
+	display: flex;
+	flex-direction: column;
+}
+.lineGraphContainer {
+	height: 10vw;
+	width: 10vw;
+	margin: auto;
+	display: flex;
+	justify-content: center;
+	margin-bottom: 5vh;
+}
+/* Style the lines by removing the fill and applying a stroke */
+.line {
+    fill: none;
+    stroke: #ffab00;
+    stroke-width: 3;
+}
+  
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+/* Style the dots by assigning a fill and stroke */
+.dot {
+    fill: #ffab00;
+    stroke: #fff;
+}
+  
+  .focus circle {
+  fill: none;
+  stroke: steelblue;
+}
+
+#Console {
+	justify-content: space-around;
+}
+#telemContainer {
+	width: 45%;
+}
+.box {
+	border: 1px solid #009FFD;
+	padding: 0.5vh;
+	margin: 1vh;
+	min-height: 10vh;
+	width: 90%;
+	display: flex;
+	justify-content: flex-start;
+}
+#commandConsole {
+	width: 45%;
 }

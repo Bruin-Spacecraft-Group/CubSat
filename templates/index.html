@@ -5,34 +5,66 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="static/js/gauge.js"></script>
+    <script src="static/js/lineGraphs.js"></script>
     <script src="static/js/main.js"></script>
 
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> -->
     <link rel="stylesheet" type="text/css" href="static/css/style.css">
 </head>
 <body>
-    <div class="title">
-        <h1>CubSat</h1>
-        <p>An educational platform teaching spacecraft engineering through a simplified 1U CubeSat
-        </p>
-    </div>
-    <div class="graphContainer">
-        <div id="gauges">
-            <span id="velocity_xGaugeContainer" class="gaugeContainer"></span>
-            <span id="velocity_yGaugeContainer" class="gaugeContainer"></span>
-            <span id="velocity_zGaugeContainer" class="gaugeContainer"></span>
-            <span id="angular_xGaugeContainer" class="gaugeContainer"></span>
-            <span id="angular_yGaugeContainer" class="gaugeContainer"></span>
-            <span id="angular_zGaugeContainer" class="gaugeContainer"></span>
-        </div><!-- 
-        <div id='lineGraphs'>
-
-        </div> -->
-        <div id="map">
-
+    <nav>
+        <h1 class="brand">CubSat</h1>
+        <div class="links">
+            <div class="button" id='buttonMain' onclick="switchPage(this)">Main</div>
+            <div class="button" id='buttonConsole' onclick="switchPage(this)">Console</div>
+            <div class="button" id='buttonVideo' onclick="switchPage(this)">Video Stream</div>
         </div>
-    </div>
-    <div id="msgContainer">
+    </nav>
+    <div class="vizWrapper">
+        <div class="vizPage" id="Main">
+            <div id="gauges">
+                <div class='gaugesSubContainer'>
+                    <span id="velocity_xGaugeContainer" class="gaugeContainer"></span>
+                    <span id="velocity_yGaugeContainer" class="gaugeContainer"></span>
+                    <span id="velocity_zGaugeContainer" class="gaugeContainer"></span>
+                </div>
+                <div class='gaugesSubContainer'>
+                    <span id="angular_xGaugeContainer" class="gaugeContainer"></span>
+                    <span id="angular_yGaugeContainer" class="gaugeContainer"></span>
+                    <span id="angular_zGaugeContainer" class="gaugeContainer"></span>
+                </div>
+            </div>
+            <div id="map">
+
+            </div>
+            <div id='lineGraphs'>
+                <div class='mydiv'></div>
+                <span id="accel_xLineGraphContainer" class="lineGraphContainer"></span>
+                
+                 <svg id='mysvg' width="700" height="110">
+                </svg>
+            </div>
+        </div>
+        <div class="vizPage" id="Console" style="display: none">
+            <div id="telemContainer">
+                <div class="box" id="motion">
+                    <p>Motion</p>
+                </div>
+                <div class="box" id="Environment">
+                    <p>Environment</p>
+                </div>
+                <div class="box" id="Health">
+                    <p>Health</p>
+                </div>
+                <div class="box" id="Position">
+                    <p>Position</p>
+                </div>
+            </div>
+            <div id="commandConsole">COMMAND</div>  
+        </div>
+        <div class="vizPage" id="Video" style="display: none">
+            <div id="videoContainer">VIDEO</div>
+        </div>
     </div>
     <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGHsh1EX_Gm5SmfOQWwT_l0GyjM7m8sl8">

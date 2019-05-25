@@ -34,17 +34,17 @@ class RandomThread(Thread):
                 data['accel'][i] = -1*data['accel'][i]
             if random() > 0.5:
                 data['gyro'][i] = -1*data['gyro'][i]
-        data['gps'] = {
-          'time': datetime.utcnow().isoformat(),
-          'coords': [34.06 + random()/1000, -118.44 + random()/1000],
-          'quality': random(),
-          'satellites': round(random()*12),
-          'altitude': random()*100,
-          'speed': random()*10,
-          'track_angle': random()*90,
-          'dilation': random(),
-          'height_geoid': random()*100
-        }
+        # data['gps'] = {
+        #   'time': datetime.utcnow().isoformat(),
+        #   'coords': [34.06 + random()/1000, -118.44 + random()/1000],
+        #   'quality': random(),
+        #   'satellites': round(random()*12),
+        #   'altitude': random()*100,
+        #   'speed': random()*10,
+        #   'track_angle': random()*90,
+        #   'dilation': random(),
+        #   'height_geoid': random()*100
+        # }
         data['dt'] = random()*1.5
         return data
 
