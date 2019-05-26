@@ -156,7 +156,7 @@ nav > .links {
     stroke: #fff;
 }
   
-  .focus circle {
+.focus circle {
   fill: none;
   stroke: steelblue;
 }
@@ -169,7 +169,6 @@ nav > .links {
 }
 .box {
 	border: 1px solid #009FFD;
-	padding: 0.5vh;
 	margin: 1vh;
 	min-height: 10vh;
 	width: 90%;

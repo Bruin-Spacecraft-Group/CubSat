@@ -77,12 +77,17 @@ function updateLineGraphs()
 }
 
 function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 16,
-      center: {lat: 0, lng: -180},
-      mapTypeId: 'terrain'
-    });
-    console.log('map inited')
+    var element = document.createElement("script")
+    element.src = `https://maps.googleapis.com/maps/api/js?key=${googleAPIkey}`
+    element.onload = function(){
+            map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 16,
+              center: {lat: 0, lng: -180},
+              mapTypeId: 'terrain'
+            });
+            console.log('map inited')
+        }
+    document.body.appendChild(element)
 }
 
 function updateMap() {
