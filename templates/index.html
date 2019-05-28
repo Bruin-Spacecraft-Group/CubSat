@@ -48,18 +48,77 @@
         </div>
         <div class="vizPage" id="Console" style="display: none">
             <div id="telemContainer">
-                <div class="box" id="motion">
+                <table class="box" id="motion">
                     <p>Motion</p>
-                </div>
-                <div class="box" id="Environment">
+                    <tr>
+                        <td>Acceleration:</td>
+                        <td id="acceleration"></td>
+                        <td>m/s^2</td>
+                    </tr>
+                    <tr>
+                        <td>Velocity:</td>
+                        <td id="velocity"></td>
+                        <td>m/s</td>
+                    </tr>
+                    <tr>
+                        <td>Angular Velocity:</td>
+                        <td id="angVelocity"></td>
+                        <td>rad/s</td>
+                    </tr>
+                </table>
+                <table class="box" id="Environment">
                     <p>Environment</p>
-                </div>
-                <div class="box" id="Health">
+                    <tr>
+                        <td>Pressure:</td>
+                        <td id="pressure"></td>
+                        <td>?</td>
+                    </tr>
+                    <tr>
+                        <td>Temperature:</td>
+                        <td id="temperature"></td>
+                        <td>C</td>
+                    </tr>
+                </table>
+                <table class="box" id="Health">
                     <p>Health</p>
-                </div>
-                <div class="box" id="Position">
+                    <tr>
+                        <td>Shunt Voltage:</td>
+                        <td id="shunt_voltage"></td>
+                        <td>mV</td>
+                    </tr>
+                    <tr>
+                        <td>Bus Voltage:</td>
+                        <td id="bus_voltage"></td>
+                        <td>V</td>
+                    </tr>
+                    <tr>
+                        <td>Current:</td>
+                        <td id="current"></td>
+                        <td>A</td>
+                    </tr>
+                    <tr>
+                        <td>Power:</td>
+                        <td id="power"></td>
+                        <td>W</td>
+                    </tr>
+                </table>
+                <table class="box" id="Position">
                     <p>Position</p>
-                </div>
+                    <tr>
+                        <td>Altitude:</td>
+                        <td id="altitude"></td>
+                        <td>m</td>
+                    </tr>
+                    <tr>
+                        <td>Position:</td>
+                        <td id="position"></td>
+                        <td>m</td>
+                    </tr>
+                    <tr>
+                        <td>Coordinates:</td>
+                        <td id="coordinates"></td>
+                    </tr>
+                </table>
             </div>
             <div id="commandConsole">COMMAND</div>  
         </div>

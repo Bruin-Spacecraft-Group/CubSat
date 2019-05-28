@@ -6,6 +6,7 @@ var flightPlanCoordinates = [];
 var state = {
     'accel': [0,0,0],
     'velocity': [0,0,0],
+    'position': [0,0,0],
     'gyro': [0,0,0],
     'angle': [0,0,0],
     'mag': [0,0,0],
@@ -13,7 +14,8 @@ var state = {
     'pressure': 0,
     'alt': 0,
     'gps': 'no_fix',
-    'voltage': 0,
+    'bus_voltage': 0,
+    'shunt_voltage': 0,
     'current': 0,
     'dt': 0,
     'runtime': 0
@@ -110,7 +112,23 @@ function updateMap() {
 }
 
 function updateConsole() {
-
+    $('#acceleration').text(`${state['accel'][0].toFixed(2)}, ${state['accel'][1].toFixed(2)}, ${state['accel'][2].toFixed(2)}`)
+    $('#velocity').text(`${state['velocity'][0].toFixed(2)}, ${state['velocity'][1].toFixed(2)}, ${state['velocity'][2].toFixed(2)}`)
+    $('#angVelocity').text(`${state['gyro'][0].toFixed(2)}, ${state['gyro'][1].toFixed(2)}, ${state['gyro'][2].toFixed(2)}`)
+    $('#pressure').text(`${state['pressure'].toFixed(2)}`)
+    $('#temperature').text(`${state['temp'].toFixed(2)}`)
+    $('#bus_voltage').text(`${state['bus_voltage'].toFixed(2)}`)
+    $('#shunt_voltage').text(`${state['shunt_voltage'].toFixed(2)}`)
+    $('#current').text(`${state['current'].toFixed(2)}`)
+    $('#power').text(`${(state['bus_voltage']*state['current'].toFixed(2)).toFixed(2)}`)
+    $('#altitude').text(`${state['alt'].toFixed(2)}`)
+    $('#position').text(`${state['position'][0].toFixed(2)}, ${state['position'][1].toFixed(2)}, ${state['position'][2].toFixed(2)}`)
+    if (state['gps'] == 'no_fix'){
+        $('#coordinates').text('no fix')
+    }
+    else {        
+        $('#coordinates').text(`${state['gps']['coords'][0].toFixed(2)}, ${state['gps']['coords'][1].toFixed(2)}`)
+    }
 }
 
 function updateVideo() {
@@ -133,6 +151,10 @@ function processTelemetry(data)
     
     for(i in state['velocity']){
         state['velocity'][i] = state['velocity'][i] + state['accel'][i]*state['dt']
+    }
+
+    for(i in state['position']){
+        state['position'][i] = state['position'][i] + state['velocity'][i]*state['dt']
     }
     
     for(i in state['gyro']){
@@ -157,7 +179,7 @@ $(document).ready(function(){
                 updateLineGraphs()
                 updateMap()
                 break;
-            case "Data":
+            case "Console":
                 updateConsole()
                 break;
             case "Video":
