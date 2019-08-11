@@ -1,4 +1,5 @@
 from time import sleep
+import time
 from threading import Thread, Event
 from gpiozero import LED
 from appThread import AppThread
@@ -45,9 +46,7 @@ class Main(Thread):
 		if self.cameraThread:
 			self.cameraThread.start()
 		while True:
-			## poll sensors
-			if self.sensorThread:
-				data = self.sensorThread.data
+			startTime = time.time()
 			# data = self.numberGen.generateData()
 			data = {
 				'accel': [0,0,0],
@@ -61,9 +60,14 @@ class Main(Thread):
 				'current': 0,
 				'dt': 0
 			}
+			## poll sensors
+			if self.sensorThread:
+				data = self.sensorThread.data
 			if self.cameraThread:
 				self.cameraThread.image()
 			## send to radio
+			endTime = time.time()
+			data['dt'] = endTime - startTime
 			if flask:
 				#print('sending')
 				#print("sending {}".format(data))

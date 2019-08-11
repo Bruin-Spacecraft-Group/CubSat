@@ -171,6 +171,7 @@ $(document).ready(function(){
     initialize()
     //receive details from server
     socket.on('telemetry', function(msg) {
+	console.log(msg)
         //console.log("Received message " + msg);
         processTelemetry(msg)
         switch(activePage){
