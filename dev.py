@@ -58,14 +58,14 @@ class Main(Thread):
 				dataString = str(round(data['accel'][0],3)) + ',' + str(round(data['accel'][1], 3)) + ',' + str(round(data['accel'][2], 3))
 				dataString += ',' + str(round(data['gyro'][0],3)) + ',' + str(round(data['gyro'][1],3)) + ',' + str(round(data['gyro'][2],3))
 				dataString += ',' + str(round(data['mag'][0],2)) + ',' + str(round(data['mag'][1],2)) + ',' + str(round(data['mag'][2],2))
-				dataString += ',' + str(round(data['imu_temp'], 2)) 
-				dataString += ',' + str(round(data['temp'],3)) 
+				dataString += ',' + str(round(data['imu_temp'], 2))
+				dataString += ',' + str(round(data['temp'],3))
 				dataString += ',' + str(round(data['pressure'],3))
-				dataString += ',' + str(round(data['alt'],3)) 
-				dataString += ',' + str(round(data['alt'],3)) 
-				dataString += ',' + str(round(data['bus_voltage'],3)) 
-				dataString += ',' + str(round(data['shunt_voltage'],3)) 
-				dataString += ',' + str(round(data['current'],3)) 
+				dataString += ',' + str(round(data['alt'],3))
+				dataString += ',' + str(round(data['alt'],3))
+				dataString += ',' + str(round(data['bus_voltage'],3))
+				dataString += ',' + str(round(data['shunt_voltage'],3))
+				dataString += ',' + str(round(data['current'],3))
 				dataString += ',' + str(round(data['dt'],3))
 				try:
 					dataString += ',' + str(data['gps']['time']) + ',' + str(data['gps']['coords'][0]) + ',' + str(data['gps']['coords'][1]) + ',' + str(data['gps']['quality'])
@@ -108,6 +108,11 @@ def test_connect():
 def test_disconnect():
     print('Client disconnected')
 
+@socketio.on('command', namespace='/test')
+def got_command(cmd):
+    print('GOT MESSAGE')
+    print(cmd)
+    socketio.emit('response', "received: " + cmd, namespace='/test')
 
 def pushData(data):
     socketio.emit('telemetry', data, namespace='/test')

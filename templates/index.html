@@ -13,16 +13,21 @@
     <link rel="stylesheet" type="text/css" href="static/css/style.css">
 </head>
 <body>
-    <nav>
+    <nav id="nav-sidebar" class="sidebar pinned">
         <h1 class="brand">CubSat</h1>
         <div class="links">
-            <div class="button" id='buttonMain' onclick="switchPage(this)">Main</div>
-            <div class="button" id='buttonConsole' onclick="switchPage(this)">Console</div>
-            <div class="button" id='buttonVideo' onclick="switchPage(this)">Video Stream</div>
+            <div class="nav-link" id='buttonDashboard' onclick="switchPage(this)">Dashboard</div>
+            <div class="nav-link" id='buttonConsole' onclick="switchPage(this)">Console</div>
+            <div class="nav-link" id='buttonVideo' onclick="switchPage(this)">Video Stream</div>
+        </div>
+        <div class="pin" id="pin-nav" onclick="pinSideBar(this)">
+          <div id="pinned" class="pin-image"></div>
+          <div id="unpinned" class="pin-image"></div>
         </div>
     </nav>
-    <div class="vizWrapper">
-        <div class="vizPage" id="Main">
+    <div class="hover-ghost" id="nav-ghost"></div>
+    <div id="vizWrapper">
+        <div class="vizPage" id="Dashboard">
             <div id="gauges">
                 <div class='gaugesSubContainer'>
                     <span id="velocity_xGaugeContainer" class="gaugeContainer"></span>
@@ -41,90 +46,100 @@
             <div id='lineGraphs'>
                 <div class='mydiv'></div>
                 <span id="accel_xLineGraphContainer" class="lineGraphContainer"></span>
-                
+
                  <svg id='mysvg' width="700" height="110">
                 </svg>
             </div>
         </div>
         <div class="vizPage" id="Console" style="display: none">
-            <div id="telemContainer">
-                <table class="box" id="motion">
-                    <p>Motion</p>
-                    <tr>
-                        <td>Acceleration:</td>
-                        <td id="acceleration"></td>
-                        <td>m/s^2</td>
-                    </tr>
-                    <tr>
-                        <td>Velocity:</td>
-                        <td id="velocity"></td>
-                        <td>m/s</td>
-                    </tr>
-                    <tr>
-                        <td>Angular Velocity:</td>
-                        <td id="angVelocity"></td>
-                        <td>rad/s</td>
-                    </tr>
-                </table>
-                <table class="box" id="Environment">
-                    <p>Environment</p>
-                    <tr>
-                        <td>Pressure:</td>
-                        <td id="pressure"></td>
-                        <td>?</td>
-                    </tr>
-                    <tr>
-                        <td>Temperature:</td>
-                        <td id="temperature"></td>
-                        <td>C</td>
-                    </tr>
-                </table>
-                <table class="box" id="Health">
-                    <p>Health</p>
-                    <tr>
-                        <td>Shunt Voltage:</td>
-                        <td id="shunt_voltage"></td>
-                        <td>mV</td>
-                    </tr>
-                    <tr>
-                        <td>Bus Voltage:</td>
-                        <td id="bus_voltage"></td>
-                        <td>V</td>
-                    </tr>
-                    <tr>
-                        <td>Current:</td>
-                        <td id="current"></td>
-                        <td>A</td>
-                    </tr>
-                    <tr>
-                        <td>Power:</td>
-                        <td id="power"></td>
-                        <td>W</td>
-                    </tr>
-                </table>
-                <table class="box" id="Position">
-                    <p>Position</p>
-                    <tr>
-                        <td>Altitude:</td>
-                        <td id="altitude"></td>
-                        <td>m</td>
-                    </tr>
-                    <tr>
-                        <td>Position:</td>
-                        <td id="position"></td>
-                        <td>m</td>
-                    </tr>
-                    <tr>
-                        <td>Coordinates:</td>
-                        <td id="coordinates"></td>
-                    </tr>
-                </table>
-            </div>
-            <div id="commandConsole">COMMAND</div>  
+          <div id="console-log"><p>Welcome, type commands below:</p></div>
+          <div id="command-row">
+            <input type="text" id="command-input"></input>
+            <button id="send-button" onclick="submit_command()">Send</button>
+          </div>
         </div>
         <div class="vizPage" id="Video" style="display: none">
             <div id="videoContainer">VIDEO</div>
         </div>
     </div>
-</body>
+    <div id="telemetry-sidebar" class="sidebar pinned">
+      <h1 class="brand">Telemetry</h1>
+      <table class="box" id="motion">
+          <p>Motion</p>
+          <tr>
+              <td>Acceleration:</td>
+              <td id="acceleration"></td>
+              <td>m/s^2</td>
+          </tr>
+          <tr>
+              <td>Velocity:</td>
+              <td id="velocity"></td>
+              <td>m/s</td>
+          </tr>
+          <tr>
+              <td>Angular Velocity:</td>
+              <td id="angVelocity"></td>
+              <td>rad/s</td>
+          </tr>
+      </table>
+      <table class="box" id="Environment">
+          <p>Environment</p>
+          <tr>
+              <td>Pressure:</td>
+              <td id="pressure"></td>
+              <td>?</td>
+          </tr>
+          <tr>
+              <td>Temperature:</td>
+              <td id="temperature"></td>
+              <td>C</td>
+          </tr>
+      </table>
+      <table class="box" id="Power">
+          <p>Power</p>
+          <tr>
+              <td>Shunt Voltage:</td>
+              <td id="shunt_voltage"></td>
+              <td>mV</td>
+          </tr>
+          <tr>
+              <td>Bus Voltage:</td>
+              <td id="bus_voltage"></td>
+              <td>V</td>
+          </tr>
+          <tr>
+              <td>Current:</td>
+              <td id="current"></td>
+              <td>A</td>
+          </tr>
+          <tr>
+              <td>Power:</td>
+              <td id="power"></td>
+              <td>W</td>
+          </tr>
+      </table>
+      <table class="box" id="Position">
+          <p>Position</p>
+          <tr>
+              <td>Altitude:</td>
+              <td id="altitude"></td>
+              <td>m</td>
+          </tr>
+          <tr>
+              <td>Position:</td>
+              <td id="position"></td>
+              <td>m</td>
+          </tr>
+          <tr>
+              <td>Coordinates:</td>
+              <td id="coordinates"></td>
+          </tr>
+      </table>
+      <div class="pin" id="pin-telemetry" onclick="pinSideBar(this)">
+        <div id="pinned" class="pin-image"></div>
+        <div id="unpinned" class="pin-image"></div>
+      </div>
+    </div>
+    <div class="hover-ghost" id="telemetry-ghost"></div>
+  </body>
 </html>

@@ -2,6 +2,7 @@ var activePage = "Main"
 var gauges = [];
 var lines = [];
 var map;
+var socket;
 var flightPlanCoordinates = [];
 var state = {
     'accel': [0,0,0],
@@ -19,12 +20,12 @@ var state = {
     'current': 0,
     'dt': 0,
     'runtime': 0
-}  
+}
 
 function createGauge(name, label, min, max)
 {
     console.log(name)
-    var config = 
+    var config =
     {
         size: 180,
         label: label,
@@ -35,11 +36,11 @@ function createGauge(name, label, min, max)
         yellowColor: "#ffff74",
         redColor: "#ff1744",
     }
-    
+
     var range = config.max - config.min;
     config.yellowZones = [{ from: config.min + range*0.75, to: config.min + range*0.9 }];
     config.redZones = [{ from: config.min + range*0.9, to: config.max }];
-    
+
     gauges[name] = new Gauge(name + "GaugeContainer", config);
     gauges[name].render();
 }
@@ -93,6 +94,7 @@ function initMap() {
 }
 
 function updateMap() {
+  return
     if (state['gps'] == 'no_fix') {
         return
     }
@@ -111,10 +113,13 @@ function updateMap() {
     map.setCenter({lat: state['gps']['coords'][0], lng: state['gps']['coords'][1]})
 }
 
-function updateConsole() {
-    $('#acceleration').text(`${state['accel'][0].toFixed(2)}, ${state['accel'][1].toFixed(2)}, ${state['accel'][2].toFixed(2)}`)
-    $('#velocity').text(`${state['velocity'][0].toFixed(2)}, ${state['velocity'][1].toFixed(2)}, ${state['velocity'][2].toFixed(2)}`)
-    $('#angVelocity').text(`${state['gyro'][0].toFixed(2)}, ${state['gyro'][1].toFixed(2)}, ${state['gyro'][2].toFixed(2)}`)
+function updateTelemetrySidebar() {
+    let accel = Math.sqrt(Math.pow(state['accel'][0],2) + Math.pow(state['accel'][1],2) + Math.pow(state['accel'][2],2));
+    $('#acceleration').text(accel.toFixed(2))
+    let vel = Math.sqrt(Math.pow(state['velocity'][0],2) + Math.pow(state['velocity'][1],2) + Math.pow(state['velocity'][2],2));
+    $('#velocity').text(vel.toFixed(2))
+    let angvel = Math.sqrt(Math.pow(state['gyro'][0],2) + Math.pow(state['gyro'][1],2) + Math.pow(state['gyro'][2],2));
+    $('#angVelocity').text(angvel.toFixed(2))
     $('#pressure').text(`${state['pressure'].toFixed(2)}`)
     $('#temperature').text(`${state['temp'].toFixed(2)}`)
     $('#bus_voltage').text(`${state['bus_voltage'].toFixed(2)}`)
@@ -122,11 +127,12 @@ function updateConsole() {
     $('#current').text(`${state['current'].toFixed(2)}`)
     $('#power').text(`${(state['bus_voltage']*state['current'].toFixed(2)).toFixed(2)}`)
     $('#altitude').text(`${state['alt'].toFixed(2)}`)
-    $('#position').text(`${state['position'][0].toFixed(2)}, ${state['position'][1].toFixed(2)}, ${state['position'][2].toFixed(2)}`)
+    let pos = Math.sqrt(Math.pow(state['position'][0],2) + Math.pow(state['position'][1],2) + Math.pow(state['position'][2],2));
+    $('#position').text(pos.toFixed(2))
     if (state['gps'] == 'no_fix'){
         $('#coordinates').text('no fix')
     }
-    else {        
+    else {
         $('#coordinates').text(`${state['gps']['coords'][0].toFixed(2)}, ${state['gps']['coords'][1].toFixed(2)}`)
     }
 }
@@ -139,7 +145,8 @@ function initialize()
 {
     createGauges();
     createLineGraphs();
-    initMap()
+    initMap();
+    assignEventHandlers();
     console.log("initialized")
 }
 
@@ -148,7 +155,7 @@ function processTelemetry(data)
     for(key in data){
         state[key] = data[key]
     }
-    
+
     for(i in state['velocity']){
         state['velocity'][i] = state['velocity'][i] + state['accel'][i]*state['dt']
     }
@@ -156,22 +163,21 @@ function processTelemetry(data)
     for(i in state['position']){
         state['position'][i] = state['position'][i] + state['velocity'][i]*state['dt']
     }
-    
+
     for(i in state['gyro']){
         state['angle'][i] = state['angle'][i] + state['gyro'][i]*state['dt']
     }
     state['runtime'] += state['dt']
-    console.log(state['gps'])
 }
 
 $(document).ready(function(){
     console.log("Running")
     //connect to the socket server.
-    var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
+    socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
     initialize()
-    //receive details from server
+
+    //receive data from server
     socket.on('telemetry', function(msg) {
-        //console.log("Received message " + msg);
         processTelemetry(msg)
         switch(activePage){
             case "Main":
@@ -180,14 +186,15 @@ $(document).ready(function(){
                 updateMap()
                 break;
             case "Console":
-                updateConsole()
                 break;
             case "Video":
                 updateVideo()
                 break;
         }
-
-        //console.log(JSON.stringify(state))
+        updateTelemetrySidebar()
+    });
+    socket.on('response', function(msg) {
+        processCommandResponse(msg)
     });
 
 });
@@ -199,4 +206,84 @@ function switchPage(object) {
     activePage = object.id.slice(6,object.id.length)
     $("#"+activePage).show()
 
+}
+
+function pinSideBar(object) {
+    console.log(object)
+    id = object.id.slice(4,object.id.length)
+    console.log(id)
+    $("#"+id+"-sidebar").toggleClass("pinned").toggleClass("unpinned")
+    $("#"+id+"-ghost").toggle()
+    if (id == "nav") {
+      if ($("#"+id+"-sidebar").hasClass("pinned")) {
+        console.log("nav pinned")
+        $("#vizWrapper").css("left", "225px")
+      } else {
+        console.log("nav unpinned")
+        $("#vizWrapper").css("left", "0px")
+      }
+    } else {
+      if ($("#"+id+"-sidebar").hasClass("pinned")) {
+        console.log("telem pinned")
+        $("#vizWrapper").css("right", "300px")
+      } else {
+        console.log("telem unpinned")
+        $("#vizWrapper").css("right", "0px")
+      }
+    }
+}
+
+function assignEventHandlers() {
+  $("#nav-ghost").mouseover(function(){
+    console.log("mouse entered")
+    $("#nav-sidebar").toggleClass("popped-out")
+  }).mouseout(function(){
+    console.log("mouse left")
+    $("#nav-sidebar").toggleClass("popped-out")
+  });
+  $("#nav-sidebar").mouseover(function(){
+    console.log("mouse entered")
+    $("#nav-sidebar").toggleClass("popped-out")
+  }).mouseout(function(){
+    console.log("mouse left")
+    $("#nav-sidebar").toggleClass("popped-out")
+  });
+
+  $("#telemetry-ghost").mouseenter(function(){
+    $("#telemetry-sidebar").toggleClass("popped-out")
+  }).mouseleave(function(){
+    $("#telemetry-sidebar").toggleClass("popped-out")
+  });
+  $("#telemetry-sidebar").mouseenter(function(){
+    $("#telemetry-sidebar").toggleClass("popped-out")
+  }).mouseleave(function(){
+    $("#telemetry-sidebar").toggleClass("popped-out")
+  });
+
+  var input = document.getElementById("command-input")
+  input.addEventListener("keyup", function(event) {
+    // Number 13 is the "Enter" key on the keyboard
+    if (event.keyCode === 13) {
+      // Cancel the default action, if needed
+      event.preventDefault();
+      // Trigger the button element with a click
+      document.getElementById("send-button").click();
+    }
+  });
+}
+
+
+function submit_command() {
+  var command = document.getElementById("command-input").value
+  console.log(command)
+  socket.emit('command', command)
+  var log =  $("#console-log")
+  log.append("<p>>> " + command + "</p>")
+  log.scrollTop(log[0].scrollHeight);
+  document.getElementById("command-input").value = ""
+}
+function processCommandResponse(msg) {
+  var log =  $("#console-log")
+  log.append("<p>" + msg + "</p>")
+  log.scrollTop(log[0].scrollHeight);
 }
