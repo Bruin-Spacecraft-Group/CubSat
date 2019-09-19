@@ -9,9 +9,9 @@ from threading import Thread
 class Radio(Thread):
 	def __init__(self):
 		spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
-		cs = digitalio.DigitalInOut(board.D16) #can be any GPIO
-		reset = digitalio.DigitalInOut(board.D26) #can be any GPIO
-		self.rfm9x = adafruit_rfm9x.RFM9x(spi, cs, reset, 433.0)
+		cs = digitalio.DigitalInOut(board.D25) #can be any GPIO
+		reset = digitalio.DigitalInOut(board.D8) #can be any GPIO
+		self.rfm9x = adafruit_rfm9x.RFM9x(spi, cs, reset, 915.0)
 		self.dataSize = 252 - 2 - 12 #number of bytes we can send in packet, minus check bytes
 		super(Radio, self).__init__()
 		
@@ -20,7 +20,7 @@ class Radio(Thread):
 		# TODO not sure if the 252 includes the preamble and header or not!
 		# need a way to mark packets -- numerator and denominator, 1 byte for each
 		print("sending over radio")
-		#print(data)
+		print(data)
 		#stringifiedData = json.dumps(data) 
 
 		dataString = str(round(data['accel'][0],3)) + ',' + str(round(data['accel'][1], 3)) + ',' + str(round(data['accel'][2], 3))
@@ -35,7 +35,10 @@ class Radio(Thread):
 		dataString += ',' + str(round(data['shunt_voltage'],3)) 
 		dataString += ',' + str(round(data['current'],3)) 
 		dataString += ',' + str(round(data['dt'],3))
-		dataString += ',' + str(data['gps']['time']) + ',' + str(data['gps']['coords'][0]) + ',' + str(data['gps']['coords'][1]) + ',' + str(data['gps']['quality'])
+		try:
+			dataString += ',' + str(data['gps']['time']) + ',' + str(data['gps']['coords'][0]) + ',' + str(data['gps']['coords'][1]) + ',' + str(data['gps']['quality'])
+		except:
+			pass
 		try:
 			dataString += ',' + str(round(data['gps']['satellites'],3))
 			dataString += ',' + str(round(data['gps']['altitude'],3))

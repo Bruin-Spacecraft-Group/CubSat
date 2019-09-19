@@ -6,14 +6,17 @@ import time
 import board
 import busio
 
-import adafruit_mpl3115a2
-
+#import adafruit_mpl3115a2
+import baroClass
 
 # Initialize the I2C bus.
 i2c = busio.I2C(board.SCL, board.SDA)
 
+#value = i2c.read_byte(0x1e)
+#print(value)
 # Initialize the MPL3115A2.
-sensor = adafruit_mpl3115a2.MPL3115A2(i2c)
+#sensor = adafruit_mpl3115a2.MPL3115A2(i2c)
+sensor = baroClass.MPL3115A2(i2c)
 # Alternatively you can specify a different I2C address for the device:
 #sensor = adafruit_mpl3115a2.MPL3115A2(i2c, address=0x10)
 
