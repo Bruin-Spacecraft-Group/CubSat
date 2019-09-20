@@ -178,12 +178,7 @@ $(document).ready(function(){
 
     //receive data from server
     socket.on('telemetry', function(msg) {
-<<<<<<< HEAD
-=======
-	console.log(msg)
-        //console.log("Received message " + msg);
->>>>>>> ecdc384754fe430ce52b166aa62bfd86156525a4
-        processTelemetry(msg)
+	      processTelemetry(msg)
         switch(activePage){
             case "Main":
                 updateGauges()
@@ -212,7 +207,6 @@ function switchPage(object) {
     $("#"+activePage).show()
 
 }
-<<<<<<< HEAD
 
 function pinSideBar(object) {
     console.log(object)
@@ -293,5 +287,3 @@ function processCommandResponse(msg) {
   log.append("<p>" + msg + "</p>")
   log.scrollTop(log[0].scrollHeight);
 }
-=======
->>>>>>> ecdc384754fe430ce52b166aa62bfd86156525a4
