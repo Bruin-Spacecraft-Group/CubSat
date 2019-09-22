@@ -1,0 +1,5 @@
+#ignore pycache
+__pycache__/*
+
+#ignore google api key
+static/js/config.js
