@@ -13,12 +13,14 @@ class Main(Thread):
 		## initialize sensors
 		self.sensorThread = False
 		self.radioThread = False
+		self.groundRadioThread = False
 		try:
 			self.sensorThread = Sensors()
 		except:
 			print("error initing sensor thread")
 		try:
-			self.radioThread = Radio()
+			#self.radioThread = Radio()
+			self.groundRadioThread = GroundRadio()
 		except:
 			print("error initing radio thread")
 		self.numberGen = RandomThread()
@@ -32,10 +34,13 @@ class Main(Thread):
 			self.sensorThread.start()
 		if self.radioThread:
 			self.radioThread.start()
+		if self.groundRadioThread:
+			self.groundRadioThread.start()
 		while True:
 			## poll sensors
 			#data = self.sensorThread.data
-			data = self.numberGen.generateData()
+			#data = self.numberGen.generateData()
+			data = self.groundRadio.read()
 			# data = {
 			# 	'accel': [0,0,0],
 			# 	'gyro': [0,0,0],
@@ -68,10 +73,11 @@ class Main(Thread):
 				dataString += ',' + str(round(data['current'],3))
 				dataString += ',' + str(round(data['dt'],3))
 				try:
-					dataString += ',' + str(data['gps']['time']) + ',' + str(data['gps']['coords'][0]) + ',' + str(data['gps']['coords'][1]) + ',' + str(data['gps']['quality'])
+					dataString += ',' + str(data['gps']['time']) + ',' + str(data['gps']['coords'][0]) + ',' + str(data['gps']['coords'][1])
 				except:
 					pass
 				try:
+					dataString += ',' + str(data['gps']['quality'])
 					dataString += ',' + str(round(data['gps']['satellites'],3))
 					dataString += ',' + str(round(data['gps']['altitude'],3))
 					dataString += ',' + str(round(data['gps']['speed'],3))

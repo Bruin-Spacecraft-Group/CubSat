@@ -1,0 +1,22 @@
+dataMap = {
+  'accel_x': 1,
+  'accel_y': 2,
+  'accel_z': 3,
+  'gyro_x': 4,
+  'gyro_y': 5,
+  'gyro_z': 6,
+  'mag_x': 7,
+  'mag_y': 8,
+  'mag_z': 9,
+  'imu_temp': 10,
+  'temp': 11,
+  'pressure': 12,
+  'alt': 13,
+  'gps_time': 14,
+  'gps_lat': 15,
+  'gps_lon': 16,
+  'gps_alt': 17,
+  'bus_voltage': 18,
+  'shunt_voltage': 19,
+  'current': 20
+}

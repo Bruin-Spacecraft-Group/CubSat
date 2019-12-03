@@ -94,7 +94,7 @@ function initMap() {
 }
 
 function updateMap() {
-  return
+  //return
     if (state['gps'] == 'no_fix') {
         return
     }
