@@ -6,13 +6,14 @@ import json
 import math
 from threading import Thread
 
-class Radio(Thread):
+class Radio(Thread, parent):
 	def __init__(self):
 		spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 		cs = digitalio.DigitalInOut(board.D25) #can be any GPIO
 		reset = digitalio.DigitalInOut(board.D8) #can be any GPIO
 		self.rfm9x = adafruit_rfm9x.RFM9x(spi, cs, reset, 915.0)
 		self.dataSize = 252 - 2 - 12 #number of bytes we can send in packet, minus check bytes
+		self.parent = parent
 		super(Radio, self).__init__()
 
 	def sendData(self, data):
@@ -52,13 +53,35 @@ class Radio(Thread):
 		#print(numPackets)
 		for i in range(numPackets):
 			packet = dataString[i*self.dataSize : (i+1)*self.dataSize]
-			packet = packet + "," + str(i+1) + "/" + str(numPackets)
+			packet = packet + str(i+1) + str(numPackets)
 			#print("packet {}/{}: {}".format(i+1, numPackets, packet))
 			print("packet {}/{}".format(i+1, numPackets))
 			try:
 				self.rfm9x.send(bytes(packet, 'utf-8'))
 			except:
-				"error sending packet"
+				print("error sending packet")
+
+	def captureAndSendImage(self):
+		try:
+			fileLoc = parent.cameraThread.image()
+			print(fileLoc)
+			myfile = open(fileLoc, 'rb')
+		    bytes = myfile.read()
+		    size = len(bytes)
+
+			numPackets = math.ceil(size / (self.dataSize))
+			#print(numPackets)
+			for i in range(numPackets):
+				packet = bytes[i*self.dataSize : (i+1)*self.dataSize]
+				packet = packet + str(i+1) + str(numPackets)
+				#print("packet {}/{}: {}".format(i+1, numPackets, packet))
+				print("packet {}/{}".format(i+1, numPackets))
+				try:
+					self.rfm9x.send(bytes(packet, 'utf-8'))
+				except:
+					print("error sending packet")
+		except:
+			print("error taking picture")
 
 	def run(self):
 		print("radioThread running")
@@ -69,5 +92,8 @@ class Radio(Thread):
 					packet_text = str(packet, 'ascii')
 					rssi = self.rfm9x.rssi
 					print('Received: {}, {}'.format(packet_text, rssi))
+					if packet_text == "picture":
+						self.captureAndSendImage()
+
 			except Exception as e:
 				print(e)

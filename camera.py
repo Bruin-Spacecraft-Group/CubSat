@@ -41,8 +41,11 @@ class Camera(Thread):
 			print("preview ended")
 		else:
 			self.whiteBalance()
-			name = self.fileLocation +  str(datetime.now())
-			self.camera.capture(name)
+			name = self.fileLocation +  str(datetime.now().replace(microsecond=0))
+			name = name.replace(":", "-")
+			self.camera.capture(name + ".jpg")
+		return name+".jpg"
+
 	def run(self):
 		while True:
 			self.camera.start_preview()
