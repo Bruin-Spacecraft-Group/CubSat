@@ -25,12 +25,12 @@ class Sensors(Thread):
 			self.imu = adafruit_lsm9ds1.LSM9DS1_I2C(self.i2c)
 		except:
 			print("could not connect to LSM9DS1")
-		
+
 		try:
 			self.currentSense = adafruit_ina219.INA219(self.i2c, addr=0x45)
 		except:
 			print("could not connect to INA219")
-		
+
 		try:
 			self.baro = adafruit_mpl3115a2.MPL3115A2(self.i2c)
 			# Calibrate altimeter
@@ -61,7 +61,7 @@ class Sensors(Thread):
 			#gps.send_command(b'PMTK314,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0')
 			# Tuen on everything (not all of it is parsed!)
 			#gps.send_command(b'PMTK314,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0')
-			
+
 			# Set update rate to once a second (1hz) which is what you typically want.
 			self.gps.send_command(b'PMTK220,900')
 			# Or decrease to once every two seconds by doubling the millisecond value.
@@ -73,8 +73,8 @@ class Sensors(Thread):
 			print(self.gps)
 		except:
 			print("could not connect to GPS")
-		
-		
+
+
 
 		self.data = {
 			'accel': [0,0,0],
@@ -92,7 +92,7 @@ class Sensors(Thread):
 		}
 
 		super(Sensors, self).__init__()
-	
+
 
 	# Main loop reads from initialized sensors
 	def run(self):
@@ -120,14 +120,14 @@ class Sensors(Thread):
 			    self.data['bus_voltage'] = self.currentSense.bus_voltage
 			    self.data['shunt_voltage'] = self.currentSense.shunt_voltage
 			    self.data['current'] = self.currentSense.current
-			
+
 			try:
 				print(self.gps.has_fix)
 				if self.gps:
-					print("got in gps")
+					#print("got in gps")
 					#self.gps.update()
 					if self.gps.has_fix:
-						print("FIX")
+						#print("FIX")
 						self.data['gps'] = dict()
 						# We have a fix! (gps.has_fix is true)
 						# Print out details about the fix like location, date, etc.
@@ -156,7 +156,7 @@ class Sensors(Thread):
 						    self.data['gps']['height_geoid'] = self.gps.height_geoid
 					else:
 						print("no fix")
-					self.data['gps'] = "no_fix"
+						self.data['gps'] = "no_fix"
 			except Exception as e:
 				print(e)
 

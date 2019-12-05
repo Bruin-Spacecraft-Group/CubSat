@@ -45,8 +45,9 @@ class Main(Thread):
 			self.radioThread.start()
 		if self.cameraThread:
 			self.cameraThread.start()
+
+		startTime = time.time()
 		while True:
-			startTime = time.time()
 			# data = self.numberGen.generateData()
 			data = {
 				'accel': [0,0,0],
@@ -68,13 +69,14 @@ class Main(Thread):
 			## send to radio
 			endTime = time.time()
 			data['dt'] = endTime - startTime
+			startTime = endTime
 			if flask:
 				#print('sending')
 				#print("sending {}".format(data))
 				pushData(data)
-				if self.radioThread:
-					#print("sending over radio")
-					self.radioThread.sendData(data)
+			if self.radioThread:
+				#print("sending over radio")
+				self.radioThread.sendData(data)
 			sleep(1)
 
 flask = True
