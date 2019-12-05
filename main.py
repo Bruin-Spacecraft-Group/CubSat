@@ -29,7 +29,7 @@ class Main(Thread):
 		except:
 			print("error initializing camera thread")
 		try:
-			self.radioThread = Radio()
+			self.radioThread = Radio(self)
 		except:
 			print("error initing radio thread")
 		#self.numberGen = RandomThread()
