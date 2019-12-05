@@ -66,8 +66,8 @@ class Radio(Thread, parent):
 			fileLoc = parent.cameraThread.image()
 			print(fileLoc)
 			myfile = open(fileLoc, 'rb')
-		    bytes = myfile.read()
-		    size = len(bytes)
+			bytes = myfile.read()
+			size = len(bytes)
 
 			numPackets = math.ceil(size / (self.dataSize))
 			#print(numPackets)
