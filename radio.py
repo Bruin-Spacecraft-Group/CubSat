@@ -6,8 +6,8 @@ import json
 import math
 from threading import Thread
 
-class Radio(Thread, parent):
-	def __init__(self):
+class Radio(Thread):
+	def __init__(self, parent):
 		spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 		cs = digitalio.DigitalInOut(board.D25) #can be any GPIO
 		reset = digitalio.DigitalInOut(board.D8) #can be any GPIO
