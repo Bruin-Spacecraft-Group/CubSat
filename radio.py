@@ -97,7 +97,7 @@ class Radio(Thread):
 				if packet is not None:
 					packet_text = str(packet, 'ascii')
 					rssi = self.rfm9x.rssi
-					print('Received: {}, {}'.format(packet_text, rssi))
+					#print('Received: {}, {}'.format(packet_text, rssi))
 					if packet_text == "picture":
 						self.captureAndSendImage()
 

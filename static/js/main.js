@@ -339,6 +339,7 @@ function initThreeJS() {
       scene.rotation.x += state.gyro[0]*gyro_conversion;
       scene.rotation.y += state.gyro[1]*gyro_conversion;
       scene.rotation.z += state.gyro[2]*gyro_conversion;
+      console.log(state.gyro[0], state.gyro[1], state.gyro[2]);
       renderer.render( scene, camera );
   }
   animate();

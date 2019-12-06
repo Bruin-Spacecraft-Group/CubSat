@@ -19,7 +19,7 @@ class Main(Thread):
 			self.sensorThread = Sensors()
 		except:
 			print("error initing sensor thread")
-		self.groundRadioThread = GroundRadio()
+		#self.groundRadioThread = GroundRadio()
 		try:
 			print("radio init")
 			#self.radioThread = Radio()
@@ -41,8 +41,8 @@ class Main(Thread):
 		while True:
 			## poll sensors
 			#data = self.sensorThread.data
-			#data = self.numberGen.generateData()
-			data = self.groundRadioThread.read()
+			data = self.numberGen.generateData()
+			#data = self.groundRadioThread.read()
 			# data = {
 			# 	'accel': [0,0,0],
 			# 	'gyro': [0,0,0],

@@ -7,7 +7,9 @@ from random import random
 from sensors import Sensors
 from radio import Radio
 from camera import Camera
-import json 
+import json
+import os
+from datetime import datetime
 
 from numberGen import RandomThread
 from flask_socketio import SocketIO, emit
@@ -27,7 +29,8 @@ class Main(Thread):
 		except:
 			print("error initing sensor thread")
 		try:
-			self.cameraThread = Camera('Mini')
+			pass
+			#self.cameraThread = Camera('Mini')
 		except:
 			print("error initializing camera thread")
 		try:
@@ -36,10 +39,10 @@ class Main(Thread):
 			print("error initing radio thread")
 		#self.numberGen = RandomThread()
 		self.daemon = True
-		print("initialized")
-		self.fileLocation = str(os.getcwd()) 
+		self.fileLocation = str(os.getcwd()) + '/'
 		self.data_file = self.fileLocation + str(datetime.now().replace(microsecond=0))
-			
+		print("initialized")
+		print(self.data_file)
 
 	def run(self):
 		print("main loop running")
@@ -83,6 +86,7 @@ class Main(Thread):
 				self.radioThread.sendData(data)
 			with open(self.data_file, 'a+') as _file:
 				_file.write(json.dumps(data))
+				print("wrote to text")
 			sleep(0.5)
 
 flask = True
