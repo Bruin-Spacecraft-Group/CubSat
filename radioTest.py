@@ -7,6 +7,9 @@ reset = digitalio.DigitalInOut(board.D8)
 import adafruit_rfm9x
 rfm9x = adafruit_rfm9x.RFM9x(spi, cs, reset, 915.0)
 
-print("sending")
+#print("sending")
+print("receiving")
 while True:
-	rfm9x.send(b'Hello world!')
+	#rfm9x.send(b'Hello world!')
+	data = rfm9x.receive()
+	print(data)

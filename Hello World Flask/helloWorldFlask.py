@@ -1,6 +1,7 @@
 from time import sleep
 from threading import Thread, Event
 from random import random
+import sensor
 
 from flask_socketio import SocketIO, emit
 from flask import Flask, render_template, url_for, copy_current_request_context
@@ -16,9 +17,9 @@ class Main(Thread):
 	def run(self):
 		print("main loop running")
 		while True:
-			data = int(random()*100)
+			data = sensor.poll()
 			pushData(data)
-			sleep(2)
+			sleep(1)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -41,7 +42,8 @@ def test_disconnect():
     print('Client disconnected')
 
 def pushData(data):
-    socketio.emit('telemetry', data, namespace='/test')
+    print(data)
+    socketio.emit('telemetry', (data), namespace='/test')
 
 if __name__ == '__main__':
 	main = Main()

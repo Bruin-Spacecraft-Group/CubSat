@@ -96,7 +96,7 @@ class Sensors(Thread):
 
 	# Main loop reads from initialized sensors
 	def run(self):
-		print("HERE")
+		#print("HERE")
 		while True:
 			# Read acceleration, magnetometer, gyroscope, temperature.
 			if self.imu:
@@ -122,7 +122,7 @@ class Sensors(Thread):
 			    self.data['current'] = self.currentSense.current
 
 			try:
-				print(self.gps.has_fix)
+				#print(self.gps.has_fix)
 				if self.gps:
 					#print("got in gps")
 					#self.gps.update()
@@ -155,13 +155,13 @@ class Sensors(Thread):
 						if self.gps.height_geoid is not None:
 						    self.data['gps']['height_geoid'] = self.gps.height_geoid
 					else:
-						print("no fix")
+						#print("no fix")
 						self.data['gps'] = "no_fix"
 			except Exception as e:
 				print(e)
 
-			print("FINISHED LOOP")
+			#print("FINISHED LOOP")
 			# Print values.
-			print(self.data)
+			#print(self.data)
 			# Delay for a second.
 			time.sleep(1.0)

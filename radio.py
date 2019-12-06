@@ -14,6 +14,7 @@ class Radio(Thread):
 		self.rfm9x = adafruit_rfm9x.RFM9x(spi, cs, reset, 915.0)
 		self.dataSize = 252 - 2 - 12 #number of bytes we can send in packet, minus check bytes
 		self.parent = parent
+		print(self.parent)
 		super(Radio, self).__init__()
 
 	def sendData(self, data):
@@ -21,7 +22,7 @@ class Radio(Thread):
 		# TODO not sure if the 252 includes the preamble and header or not!
 		# need a way to mark packets -- numerator and denominator, 1 byte for each
 		print("sending over radio")
-		print(data)
+		#print(data)
 		#stringifiedData = json.dumps(data)
 
 		dataString = str(round(data['accel'][0],3)) + ',' + str(round(data['accel'][1], 3)) + ',' + str(round(data['accel'][2], 3))
@@ -62,32 +63,37 @@ class Radio(Thread):
 				print("error sending packet")
 
 	def captureAndSendImage(self):
+		print("captureAndSendImage")
 		try:
-			fileLoc = parent.cameraThread.image()
-			print(fileLoc)
+			print(self.parent)
+			print(self.parent.cameraThread)
+			fileLoc = self.parent.cameraThread.image()
+			print("took image, file at: " + fileLoc)
 			myfile = open(fileLoc, 'rb')
-			bytes = myfile.read()
-			size = len(bytes)
-
+			mybytes = str(myfile.read())
+			size = len(mybytes)
+			print(mybytes)
+			print(size)
 			numPackets = math.ceil(size / (self.dataSize))
 			#print(numPackets)
 			for i in range(numPackets):
-				packet = bytes[i*self.dataSize : (i+1)*self.dataSize]
+				packet = mybytes[i*self.dataSize : (i+1)*self.dataSize]
 				packet = packet + str(i+1) + str(numPackets)
 				#print("packet {}/{}: {}".format(i+1, numPackets, packet))
 				print("packet {}/{}".format(i+1, numPackets))
 				try:
 					self.rfm9x.send(bytes(packet, 'utf-8'))
-				except:
+				except Exception as e:
 					print("error sending packet")
+					print(e)
 		except:
 			print("error taking picture")
 
 	def run(self):
 		print("radioThread running")
-		while False:
+		while True:
 			try:
-				packet = self.rfm9x.receive(timeout=0.1)  # Wait for a packet to be received (up to 0.5 seconds)
+				packet = self.rfm9x.receive(timeout=0.5)  # Wait for a packet to be received (up to 0.5 seconds)
 				if packet is not None:
 					packet_text = str(packet, 'ascii')
 					rssi = self.rfm9x.rssi
