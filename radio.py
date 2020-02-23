@@ -63,6 +63,8 @@ class Radio(Thread):
 
 	def captureAndSendImage(self):
 		try:
+			print(parent)
+			print(parent.cameraThread)
 			fileLoc = parent.cameraThread.image()
 			print(fileLoc)
 			myfile = open(fileLoc, 'rb')

@@ -39,8 +39,8 @@ class Main(Thread):
 		while True:
 			## poll sensors
 			#data = self.sensorThread.data
-			#data = self.numberGen.generateData()
-			data = self.groundRadio.read()
+			data = self.numberGen.generateData()
+			#data = self.groundRadio.read()
 			# data = {
 			# 	'accel': [0,0,0],
 			# 	'gyro': [0,0,0],

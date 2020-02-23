@@ -21,6 +21,7 @@ var state = {
     'dt': 0,
     'runtime': 0
 }
+var gyro_conversion = 0.001;
 
 function createGauge(name, label, min, max)
 {
@@ -147,6 +148,7 @@ function initialize()
     createLineGraphs();
     initMap();
     assignEventHandlers();
+    initThreeJS();
     console.log("initialized")
 }
 
@@ -184,6 +186,7 @@ $(document).ready(function(){
                 updateGauges()
                 updateLineGraphs()
                 updateMap()
+                //updateAngle()
                 break;
             case "Console":
                 break;
@@ -286,4 +289,63 @@ function processCommandResponse(msg) {
   var log =  $("#console-log")
   log.append("<p>" + msg + "</p>")
   log.scrollTop(log[0].scrollHeight);
+}
+
+
+/* THREE JS CODE */
+function initThreeJS() {
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+  var model;
+  
+  scene.background = new THREE.Color( 0xffffff );
+  var light1 = new THREE.AmbientLight( 0x404040 ); // soft white light
+  scene.add( light1 );
+  var light = new THREE.PointLight( 0x000000, 1 );
+  light.position.set( 50, 50, 250 );
+  scene.add( light );
+  
+  var renderer = new THREE.WebGLRenderer();
+  renderer.setSize( window.innerWidth, window.innerHeight );
+  document.getElementById("Video").appendChild( renderer.domElement );
+  
+  var axesHelper = new THREE.AxesHelper(100);
+  scene.add(axesHelper);
+  
+  var loader = new THREE.GLTFLoader();
+  loader.load( '/static/js/cube.gltf', function ( gltf ) {    
+      model = gltf.scene;
+      scene.add(model);
+      model.position.x = -50;
+      model.position.y = -56.5;
+      model.position.z = -50;
+  
+  },
+  // called while loading is progressing
+  function ( xhr ) {
+  
+      console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+  
+  }, undefined, function ( error ) {
+      console.error( error );
+  
+  } );
+  
+  camera.position.z = 200;
+  camera.position.x = 0;
+  camera.position.y = 0;
+  function animate() {
+      requestAnimationFrame( animate );
+      scene.rotation.x += state.gyro[0]*gyro_conversion;
+      scene.rotation.y += state.gyro[1]*gyro_conversion;
+      scene.rotation.z += state.gyro[2]*gyro_conversion;
+      renderer.render( scene, camera );
+  }
+  animate();
+  
+  function updateAngle(x,y,z) {
+      scene.rotation.x += x;
+      scene.rotation.y += y;
+      scene.rotation.z += z;
+  }
 }
