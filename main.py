@@ -16,6 +16,7 @@ from threading import Thread
 
 class Main(Thread):
 	def __init__(self):
+		super(Main, self).__init__()
 		## initialize sensors
 		self.sensorThread = False
 		self.radioThread = False
@@ -25,7 +26,7 @@ class Main(Thread):
 		except:
 			print("error initing sensor thread")
 		try:
-			self.cameraThread = Camera()
+			self.cameraThread = Camera('Mini')
 		except:
 			print("error initializing camera thread")
 		try:
@@ -33,7 +34,6 @@ class Main(Thread):
 		except:
 			print("error initing radio thread")
 		#self.numberGen = RandomThread()
-		super(Main, self).__init__()
 		self.daemon = True
 		print("initialized")
 
@@ -77,7 +77,7 @@ class Main(Thread):
 			if self.radioThread:
 				#print("sending over radio")
 				self.radioThread.sendData(data)
-			sleep(1)
+			sleep(0.5)
 
 flask = True
 app = Flask(__name__)

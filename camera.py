@@ -47,7 +47,7 @@ class Camera(Thread):
 		return name+".jpg"
 
 	def run(self):
-		while True:
+		while False:
 			self.camera.start_preview()
 			sleep(2)
 			self.camera.capture('image.jpg')

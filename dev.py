@@ -2,6 +2,7 @@ from time import sleep
 from threading import Thread, Event
 from appThread import AppThread
 from random import random
+from groundRadio import GroundRadio
 
 from numberGen import RandomThread
 from flask_socketio import SocketIO, emit
@@ -18,9 +19,10 @@ class Main(Thread):
 			self.sensorThread = Sensors()
 		except:
 			print("error initing sensor thread")
+		self.groundRadioThread = GroundRadio()
 		try:
+			print("radio init")
 			#self.radioThread = Radio()
-			self.groundRadioThread = GroundRadio()
 		except:
 			print("error initing radio thread")
 		self.numberGen = RandomThread()
@@ -39,8 +41,8 @@ class Main(Thread):
 		while True:
 			## poll sensors
 			#data = self.sensorThread.data
-			data = self.numberGen.generateData()
-			#data = self.groundRadio.read()
+			#data = self.numberGen.generateData()
+			data = self.groundRadioThread.read()
 			# data = {
 			# 	'accel': [0,0,0],
 			# 	'gyro': [0,0,0],
@@ -56,7 +58,7 @@ class Main(Thread):
 			# }
 
 			## send to radio
-			if flask:
+			if flask and data is not None:
 				#print('sending')
 				#print("sending {}".format(data))
 				pushData(data)
@@ -88,9 +90,9 @@ class Main(Thread):
 					pass
 
 				print(dataString)
-				if self.radioThread:
+				#if self.radioThread:
 					#print("sending over radio")
-					self.radioThread.sendData(data)
+					#self.radioThread.sendData(data)
 			sleep(1)
 
 flask = True
