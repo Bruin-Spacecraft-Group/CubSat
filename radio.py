@@ -65,17 +65,10 @@ class Radio(Thread):
 	def captureAndSendImage(self):
 		print("captureAndSendImage")
 		try:
-<<<<<<< HEAD
-			print(parent)
-			print(parent.cameraThread)
-			fileLoc = parent.cameraThread.image()
-			print(fileLoc)
-=======
 			print(self.parent)
 			print(self.parent.cameraThread)
 			fileLoc = self.parent.cameraThread.image()
 			print("took image, file at: " + fileLoc)
->>>>>>> 36b9568fa37ee335c19ce514eceeb6dee309bf57
 			myfile = open(fileLoc, 'rb')
 			mybytes = str(myfile.read())
 			size = len(mybytes)
