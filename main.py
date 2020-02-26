@@ -110,6 +110,14 @@ def test_connect():
 def test_disconnect():
     print('Client disconnected')
 
+@socketio.on('command', namespace='/test')
+def got_command(cmd):
+    print('GOT MESSAGE')
+    print(cmd)
+    socketio.emit('response', "received: " + cmd, namespace='/test')
+	if cmd is "calibrate":
+		self.sensorThread.calibrate()
+
 
 def pushData(data):
     socketio.emit('telemetry', data, namespace='/test')

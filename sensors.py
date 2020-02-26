@@ -91,8 +91,29 @@ class Sensors(Thread):
 			'dt': 0
 		}
 
+		self.accel_offset = [0,0,0]
+		self.gyro_offset = [0,0,0]
+		
 		super(Sensors, self).__init__()
 
+	def calibrate(self):
+		accel_running_total = [0,0,0]
+		gyro_running_total = [0,0,0]
+		samples = 100
+		for i in range(samples):
+			accel_x, accel_y, accel_z = self.imu.acceleration
+			gyro_x, gyro_y, gyro_z = self.imu.gyro
+			
+			accel_running_total[0] = accel_running_total[0] + accel_x
+			accel_running_total[1] = accel_running_total[1] + accel_y
+			accel_running_total[2] = accel_running_total[2] + accel_z
+			
+			gyro_running_total[0] = gyro_running_total[0] + gyro_x
+			gyro_running_total[1] = gyro_running_total[1] + gyro_y
+			gyro_running_total[2] = gyro_running_total[2] + gyro_z
+
+		self.accel_offset = [accel_running_total[0]/samples, accel_running_total[1]/samples, accel_running_total[2]/samples]	
+		self.gyro_offset = [gyro_running_total[0]/samples, gyro_running_total[1]/samples, gyro_running_total[2]/samples]	
 
 	# Main loop reads from initialized sensors
 	def run(self):
@@ -104,9 +125,9 @@ class Sensors(Thread):
 				mag_x, mag_y, mag_z = self.imu.magnetic
 				gyro_x, gyro_y, gyro_z = self.imu.gyro
 				temp = self.imu.temperature
-				self.data['accel'] = [accel_x, accel_y, accel_z]
+				self.data['accel'] = [accel_x-self.accel_offset[0], accel_y-self.accel_offset[1], accel_z-self.accel_offset[2]]
 				self.data['mag'] = [mag_x, mag_y, mag_z]
-				self.data['gyro'] = [gyro_x, gyro_y, gyro_z]
+				self.data['gyro'] = [gyro_x-self.gyro_offset[0], gyro_y-self.gyro_offset[1], gyro_z-self.gyro_offset[2]]
 				self.data['imu_temp'] = temp
 
 			if self.baro:
